@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoshu.dao.GoodsMapper">
+  <resultMap id="BaseResultMap" type="com.xiaoshu.entity.Goods">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="g_id" jdbcType="INTEGER" property="gId" />
+    <result column="t_id" jdbcType="INTEGER" property="tId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+    <result column="createtime" jdbcType="DATE" property="createtime" />
+  </resultMap>
+  <resultMap id="gat" type="com.xiaoshu.entity.Goods">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="g_id" jdbcType="INTEGER" property="gId" />
+    <result column="t_id" jdbcType="INTEGER" property="tId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+    <result column="createtime" jdbcType="DATE" property="createtime" />
+    <association javaType="com.xiaoshu.entity.Goodstype" property="goodstype">
+		<id column="t_id" property="tId" />
+		<result column="t_typename" property="tTypename" />
+	</association>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    g_id, t_id, name, price, createtime
+  </sql>
+  <select id="queryGoods" resultMap="gat" parameterType="Cx">
+  select*from tb_goods g,tb_goodstype t 
+  <where>
+  g.t_id=t.t_id
+  <if test="name!=null and name!=''">
+  and g.name like '%${name}%'
+  </if>
+  <if test="star!=null">
+  and g.createtime &gt;= #{star}
+  </if>
+  <if test="end!=null">
+  and g.createtime &lt;= #{end}
+  </if>
+  </where>
+  order by g.g_id asc
+  </select>
+  <select id="findTj" resultType="tj">
+  select t.t_typename typename,count(*) num from tb_goods g,tb_goodstype t where g.t_id=t.t_id GROUP BY t.`t_typename`
+  </select>
+</mapper>
